@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -30,5 +31,10 @@ class Product extends Model
     public function getSluggableColumnName(): string
     {
         return 'name';
+    }
+
+    public function sales(): BelongsToMany
+    {
+        return $this->belongsToMany(Sale::class);
     }
 }
