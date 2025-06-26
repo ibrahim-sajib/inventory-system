@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductSeeder::class);
         
 
-        User::factory(20)->create()->each(function ($user) {
-            $roles = RoleType::all();
-            $randomRole = array_rand($roles);
+        // User::factory(20)->create()->each(function ($user) {
+        //     $roles = RoleType::all();
+        //     $randomRole = array_rand($roles);
 
-            $user->assignRole($roles[$randomRole]);
-        });
+        //     $user->assignRole($roles[$randomRole]);
+        // });
     }
 }
