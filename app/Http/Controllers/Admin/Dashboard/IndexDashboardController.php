@@ -19,8 +19,6 @@ class IndexDashboardController extends Controller
 
         $report = $journalRepository->getJournalEntriesByDateRange($from, $to);
 
-        // dd($report);
-
         return Inertia::render('Admin/Dashboard/Index', [
             'report' => $report,
         ]);
