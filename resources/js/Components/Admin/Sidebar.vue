@@ -39,8 +39,14 @@ const navigation = ref([
         current: true,
     },
     {
-        name: "Banner",
-        href: "admin:banners:index",
+        name: "Products",
+        href: "admin:products:index",
+        icon: BriefcaseIcon,
+        current: false,
+    },
+        {
+        name: "Sales",
+        href: "admin:sales:index",
         icon: PhotoIcon,
         current: false,
     },
@@ -48,12 +54,6 @@ const navigation = ref([
         name: "Categories",
         href: "#",
         icon: SquaresPlusIcon,
-        current: false,
-    },
-    {
-        name: "Products",
-        href: "admin:products:index",
-        icon: BriefcaseIcon,
         current: false,
     },
     {

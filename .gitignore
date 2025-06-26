@@ -5,6 +5,8 @@
 /public/storage
 /storage/*.key
 /vendor
+# macOS system files
+.DS_Store
 .env
 .env.backup
 .env.production
