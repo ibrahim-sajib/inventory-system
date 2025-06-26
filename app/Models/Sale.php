@@ -11,6 +11,7 @@ class Sale extends Model
     use HasFactory;
 
     protected $fillable = [
+        'customer_name',
         'subtotal',
         'discount',
         'vat',

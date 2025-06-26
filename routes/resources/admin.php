@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\Banner\IndexBannerController;
 use App\Http\Controllers\Admin\Dashboard\IndexDashboardController;
 use App\Http\Controllers\Admin\Product\IndexProductController;
 use App\Http\Controllers\Admin\Product\StoreProductController;
+use App\Http\Controllers\Admin\Sale\IndexSaleController;
+use App\Http\Controllers\Admin\Sale\StoreSaleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,9 +42,8 @@ Route::middleware(['auth'])->group(function () {
 
     // sales route
     Route::group(['prefix' => 'sales', 'as' => 'sales:'], function () {
-        // Route::get('/', IndexSaleController::class)->name('index');
-        // Route::get('/create', CreateSaleController::class)->name('create');
-        // Route::post('/', StoreSaleController::class)->name('store');
+        Route::get('/', IndexSaleController::class)->name('index');
+        Route::post('/', StoreSaleController::class)->name('store');
     });
 
     // logout route

@@ -14,6 +14,7 @@ class SaleSeeder extends Seeder
     {
         $sales = [
             [
+                'customer_name' => fake()->name(),
                 'subtotal' => 1000,
                 'discount' => 50,
                 'vat' => 100,
@@ -22,6 +23,7 @@ class SaleSeeder extends Seeder
                 'due' => 250,
             ],
             [
+                'customer_name' => fake()->name(),
                 'subtotal' => 2000,
                 'discount' => 100,
                 'vat' => 200,
@@ -30,6 +32,7 @@ class SaleSeeder extends Seeder
                 'due' => 0,
             ],
             [
+                'customer_name' => fake()->name(),
                 'subtotal' => 1500,
                 'discount' => 75,
                 'vat' => 150,
