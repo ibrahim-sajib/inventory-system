@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Sale\StoreSaleRequest;
 use App\Contract\Repositories\SaleRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
+use App\Events\SaleCreated;
 
 class StoreSaleController extends Controller
 {
@@ -26,6 +27,8 @@ class StoreSaleController extends Controller
         $sale = $saleRepository->create($saleData);
         $productRepository->updateProductStocks($saleData['products']);
         $sale->products()->attach($saleData['products']);
+
+        event(new SaleCreated($sale, $saleData));
 
         return redirect()->back()->with('success', 'Sale created successfully!');
     }

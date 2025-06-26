@@ -8,4 +8,5 @@ enum JournalAccount: string
     case VAT = 'vat';
     case DISCOUNT = 'discount';
     case SALES = 'sales';
+    case DUE = 'due';
 }

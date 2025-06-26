@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // this table should be more optimized for performance and maintainability for double entry accounting
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained()->onDelete('cascade');
             $table->enum('type', ['debit', 'credit']);
-            $table->enum('account', ['cash', 'vat', 'discount', 'sales']);
+            $table->enum('account', ['cash', 'vat', 'discount', 'sales', 'due']);
             $table->decimal('amount', 12, 2);
             $table->timestamps();
         });
