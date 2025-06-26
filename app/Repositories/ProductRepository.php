@@ -21,4 +21,24 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         // should be paginated, but applied this for faster at this time
     }
 
+    public function updateProductStock(int $productId, int $quantity): bool
+    {
+        $product = $this->model->find($productId);
+        if ($product && $product->stock >= $quantity) {
+            $product->decrement('stock', $quantity);
+            return true;
+        }
+        return false;
+    }
+
+    public function updateProductStocks(array $products): void
+    {
+        //should be more optimized
+        foreach ($products as $item) {
+            $product = $this->model->find($item['product_id']);
+            if ($product && $product->stock >= ($item['quantity'] ?? 0)) {
+                $product->decrement('stock', $item['quantity']);
+            }
+        }
+    }
 }

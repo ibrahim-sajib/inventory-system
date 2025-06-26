@@ -8,5 +8,6 @@ interface ProductRepositoryInterface extends BaseRepositoryInterface
 {
     
     public function all(): Collection;
+    public function updateProductStocks(array $products): void;
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Sale;
 
+use App\Contract\Repositories\ProductRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Sale\StoreSaleRequest;
 use App\Contract\Repositories\SaleRepositoryInterface;
@@ -12,14 +13,20 @@ class StoreSaleController extends Controller
 
     public function __invoke(
         StoreSaleRequest $request,
-        SaleRepositoryInterface $saleRepository
+        SaleRepositoryInterface $saleRepository,
+        ProductRepositoryInterface $productRepository
     )
     {
-        // You may need to calculate subtotal, total, due, etc. here
         $data = $request->validated();
-        dd($data); // Debugging line, remove in production
-        // Example: $this->saleRepository->createWithProducts($data);
-        $saleRepository->create($data); // Adjust as per your logic
+
+        $saleData = prepare_sale_calculation($data);
+
+        // dd($saleData);
+        $saleData['customer_name'] = $data['customer_name'];
+
+        $sale = $saleRepository->create($saleData);
+        $productRepository->updateProductStocks($saleData['products']);
+        $sale->products()->attach($saleData['products']);
 
         return redirect()->back()->with('success', 'Sale created successfully!');
     }

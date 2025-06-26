@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use Carbon\Carbon;
 
 if (! function_exists('swap')) {
@@ -149,20 +150,6 @@ if (! function_exists('calculate_percentage_amount')) {
     }
 }
 
-if (! function_exists('calculate_price')) {
-    function calculate_price($price, $adminCommissionRate)
-    {
-        $price['admin_commission'] = calculate_percentage_amount($price['unit_amount'], $adminCommissionRate);
-        if ($price['is_affiliate_percent']) {
-            $price['affiliate_commission'] = calculate_percentage_amount(($price['unit_amount'] - $price['admin_commission']), $price['affiliate_commission']);
-        }
-
-        $price['seller_amount'] = $price['unit_amount'] - $price['admin_commission'];
-
-        return $price;
-    }
-}
-
 
 if (! function_exists('get_last_twelve_month_names')) {
     function get_last_twelve_month_names(?string $date = null, $format = 'M')
@@ -196,3 +183,53 @@ if (! function_exists('get_last_n_date')) {
         return array_reverse($dates);
     }
 }
+
+
+
+if (! function_exists('prepare_sale_calculation')) {
+    function prepare_sale_calculation(array $data)
+    {
+        $subtotal = 0;
+        $productsWithPrice = [];
+
+        if (isset($data['products']) && is_array($data['products'])) {
+            foreach ($data['products'] as $item) {
+                $product = Product::find($item['product_id']);
+                $price = $product ? $product->sell_price : 0;
+                $quantity = $item['quantity'] ?? 0;
+                $subtotal += $quantity * $price;
+
+                $productsWithPrice[] = [
+                    'product_id' => $item['product_id'],
+                    'quantity' => $quantity,
+                    'price' => $price,
+                ];
+            }
+        }
+
+        $discount = isset($data['discount']) ? (float)$data['discount'] : 0;
+        $afterDiscount = $subtotal - $discount;
+
+        $vat = 0;
+        if (isset($data['vat']) && $data['vat']) {
+            $vat = calculate_percentage_amount($afterDiscount, $data['vat']);
+        }
+
+        $total = $afterDiscount + $vat;
+        $paid = isset($data['paid']) ? (float)$data['paid'] : 0;
+        $due = abs(($paid >= $total) ? 0 : ($total - $paid));
+
+        return [
+            'subtotal'      => $subtotal,
+            'discount'      => $discount,
+            'afterDiscount' => $afterDiscount,
+            'vat'           => $vat,
+            'total'         => $total,
+            'paid'          => $paid,
+            'due'           => $due,
+            'products'      => $productsWithPrice,
+        ];
+    }
+}
+
+

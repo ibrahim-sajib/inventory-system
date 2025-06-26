@@ -82,6 +82,11 @@ const handleCreate = () => {
 };
 
 const selectedProductIds = () => saleForm.products.map(item => item.product_id).filter(Boolean);
+
+const getProductStock = (id) => {
+  const p = products.value.find(prod => prod.id === id);
+  return p ? p.stock : 0;
+};
 </script>
 
 <template>
@@ -124,7 +129,11 @@ const selectedProductIds = () => saleForm.products.map(item => item.product_id).
             <label class="block mb-1">Products</label>
             <div v-if="productLoading" class="text-gray-500">Loading products...</div>
             <div v-else>
-              <div v-for="(item, idx) in saleForm.products" :key="idx" class="flex gap-2 mb-2">
+              <div
+                v-for="(item, idx) in saleForm.products"
+                :key="idx"
+                class="flex gap-2 mb-2 items-center"
+              >
                 <select
                   v-model="item.product_id"
                   class="border border-gray-400 rounded-md p-2 w-1/2"
@@ -141,7 +150,18 @@ const selectedProductIds = () => saleForm.products.map(item => item.product_id).
                     {{ product.name }}
                   </option>
                 </select>
-                <input v-model="item.quantity" type="number" min="1" class="border border-gray-400 rounded-md p-2 w-1/4" placeholder="Qty" required />
+                <input
+                  v-model.number="item.quantity"
+                  type="number"
+                  min="1"
+                  :max="getProductStock(item.product_id) || 1"
+                  class="border border-gray-400 rounded-md p-2 w-1/4"
+                  placeholder="Qty"
+                  required
+                />
+                <span v-if="item.product_id && item.quantity > getProductStock(item.product_id)" class="text-xs text-red-500">
+                  Max: {{ getProductStock(item.product_id) }}
+                </span>
                 <button type="button" class="text-red-500" @click="removeProductRow(idx)" v-if="saleForm.products.length > 1">Remove</button>
               </div>
               <button type="button" class="btn-primary" @click="addProductRow">Add Product</button>
