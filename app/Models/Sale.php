@@ -26,4 +26,9 @@ class Sale extends Model
         return $this->belongsToMany(Product::class);
     }
 
+    public function journals()
+    {
+        return $this->hasMany(Journal::class);
+    }
+
 }

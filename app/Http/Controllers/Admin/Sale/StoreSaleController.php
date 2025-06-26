@@ -21,7 +21,6 @@ class StoreSaleController extends Controller
 
         $saleData = prepare_sale_calculation($data);
 
-        // dd($saleData);
         $saleData['customer_name'] = $data['customer_name'];
 
         $sale = $saleRepository->create($saleData);
