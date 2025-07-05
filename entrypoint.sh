@@ -27,11 +27,23 @@
 
 #!/bin/sh
 
+# permission fix
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# wait for database to be ready
+echo "Waiting for MySQL..."
+until mysqladmin ping -h db --silent; do
+  sleep 2
+done
+
+# then migrate
 echo "Running migrations..."
-cd /var/www/html
 php artisan migrate --force
 
-echo "Caching config..."
-php artisan config:cache
+# optionally seed
+php artisan db:seed --force
 
-exec apache2-foreground
+# start apache
+echo "Starting Apache..."
+apache2-foreground
