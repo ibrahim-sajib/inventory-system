@@ -27,23 +27,16 @@
 
 #!/bin/sh
 
-# # permission fix
-# chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-# chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# wait for mysql
+echo "Waiting for MySQL..."
+until mysqladmin ping -h db -uroot -ppassword --silent; do
+  sleep 2
+done
 
-# # wait for database to be ready
-# echo "Waiting for MySQL..."
-# until mysqladmin ping -h db --silent; do
-#   sleep 2
-# done
+# run migrate
+echo "Running migrations..."
+php artisan migrate --force
 
-# # then migrate
-# echo "Running migrations..."
-# php artisan migrate --force
-
-# # optionally seed
-# php artisan db:seed --force
-
-# # start apache
-# echo "Starting Apache..."
-# apache2-foreground
+# start apache
+echo "Starting Apache..."
+apache2-foreground
