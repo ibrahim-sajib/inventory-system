@@ -57,6 +57,8 @@ RUN a2enmod rewrite headers
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
 # Update uploads config
 RUN echo "file_uploads = On\n" \
          "memory_limit = 1024M\n" \
