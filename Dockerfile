@@ -71,3 +71,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 RUN npm install npm@10.8.2 -g
 
 
+# copy entrypoint file
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
