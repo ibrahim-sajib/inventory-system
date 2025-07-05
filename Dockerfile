@@ -174,7 +174,6 @@ RUN php artisan config:cache \
     && php artisan view:cache
 
 
-
 # permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
