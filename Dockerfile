@@ -55,25 +55,33 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Enable headers module
 RUN a2enmod rewrite headers
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
-
-# after composer install
-# Install Node.js and npm
+# Install Node.js & npm
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-    
-COPY package*.json ./
-# Update npm to the latest version
-RUN npm install npm@10.8.2 -g
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy only package.json and package-lock.json first
+COPY package*.json ./
+
+# Install npm dependencies (including devDependencies for build)
+RUN npm install
+
+# Copy composer files and install PHP dependencies
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Copy the rest of the application code
 COPY . .
+
+# Build frontend assets
 RUN npm run build
 
-# permission fix for storage + cache
+# Permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
@@ -87,7 +95,6 @@ RUN echo "file_uploads = On\n" \
          > /usr/local/etc/php/conf.d/uploads.ini
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
 
 
 
