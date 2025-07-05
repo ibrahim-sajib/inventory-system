@@ -1,4 +1,8 @@
 FROM php:8.2-apache
+
+# copy project code
+COPY . /var/www/html
+
 ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
 
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync
