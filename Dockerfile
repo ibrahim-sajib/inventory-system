@@ -59,7 +59,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+
 # after composer install
+# Install Node.js and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+    
 COPY package*.json ./
 # Update npm to the latest version
 RUN npm install npm@10.8.2 -g
@@ -82,9 +88,6 @@ RUN echo "file_uploads = On\n" \
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Install Node.js and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
 
 
 
