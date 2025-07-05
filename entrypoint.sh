@@ -15,10 +15,23 @@
 # fi
 
 # migrate + cache
-echo "Running migrations..."
-php artisan migrate --force
-php artisan config:cache
+# echo "Running migrations..."
+# php artisan migrate --force
+# php artisan config:cache
 
 # # start supervisor (to handle nginx + php-fpm)
 # echo "Starting Supervisor..."
 # exec supervisord -c /etc/supervisord.conf
+
+
+
+#!/bin/sh
+
+echo "Running migrations..."
+cd /var/www/html
+php artisan migrate --force
+
+echo "Caching config..."
+php artisan config:cache
+
+exec apache2-foreground
