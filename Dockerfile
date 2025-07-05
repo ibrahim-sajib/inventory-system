@@ -59,6 +59,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# after composer install
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
 # permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
