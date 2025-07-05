@@ -57,21 +57,25 @@ RUN a2enmod rewrite headers
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-
-# after composer install
-# Install Node.js and npm
+# Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-    
+# Copy package.json
 COPY package*.json ./
-# Update npm to the latest version
-RUN npm install npm@10.8.2 -g
 
+# Install npm dependencies including devDependencies
+RUN npm install --include=dev
+
+# copy all source
 COPY . .
+
+# build vite
 RUN npm run build
+
 
 # permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
