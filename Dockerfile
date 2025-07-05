@@ -169,6 +169,15 @@ COPY . .
 # build vite
 RUN npm run build
 
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# fix apache directory rules
+RUN echo '<Directory /var/www/html/public>
+    AllowOverride All
+    Require all granted
+</Directory>' >> /etc/apache2/apache2.conf
 
 # permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
