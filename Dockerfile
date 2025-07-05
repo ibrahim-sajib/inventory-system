@@ -69,6 +69,8 @@ WORKDIR /var/www/html
 COPY package*.json ./
 
 # Install npm dependencies (including devDependencies for build)
+# RUN npm install npm@10.8.2 
+ENV NODE_ENV=development
 RUN npm install
 
 # Copy composer files and install PHP dependencies
@@ -80,6 +82,7 @@ COPY . .
 
 # Build frontend assets
 RUN npm run build
+ENV NODE_ENV=production
 
 # Permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
