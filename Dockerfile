@@ -61,7 +61,8 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # after composer install
 COPY package*.json ./
-RUN npm install
+# Update npm to the latest version
+RUN npm install npm@10.8.2 -g
 
 COPY . .
 RUN npm run build
@@ -85,6 +86,5 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-# Update npm to the latest version
-RUN npm install npm@10.8.2 -g
+
 
