@@ -1,7 +1,4 @@
 FROM php:8.2-apache
-
-WORKDIR /var/www/html
-
 ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
 
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync
@@ -73,6 +70,3 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 # Update npm to the latest version
 RUN npm install npm@10.8.2 -g
 
-
-#Run laravel migration and start server
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
