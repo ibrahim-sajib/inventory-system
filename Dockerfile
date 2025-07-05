@@ -59,6 +59,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# permission fix for storage + cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+
 # Update uploads config
 RUN echo "file_uploads = On\n" \
          "memory_limit = 1024M\n" \
