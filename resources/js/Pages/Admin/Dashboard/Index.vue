@@ -43,7 +43,7 @@ const filterReport = () => {
   <AdminLayout>
     <template #main>
       <div class="mb-6">
-        <h2 class="text-2xl font-bold mb-2">Financial Report</h2>
+        <h2 class="text-2xl font-bold mb-2">Financial Report Show</h2>
         <div class="flex flex-col sm:flex-row items-center gap-2 mb-4">
           <div class="flex items-center gap-2">
             <label class="text-sm text-gray-600">From:</label>
