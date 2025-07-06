@@ -6,7 +6,7 @@ set -e
 php artisan optimize:clear
 
 # then run vite build
-npm run build
+# npm run build
 
 # then cache again
 php artisan config:cache
