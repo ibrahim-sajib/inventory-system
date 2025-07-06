@@ -58,9 +58,6 @@ RUN echo "file_uploads = On\n" \
          "max_execution_time = 1200\n" \
          > /usr/local/etc/php/conf.d/uploads.ini
 
-# optimize
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
