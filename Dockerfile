@@ -44,7 +44,7 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN npm install
 
 # build vite
-RUN npm run build
+# RUN npm run build
 
 # permissions
 RUN chown -R www-data:www-data storage bootstrap/cache \

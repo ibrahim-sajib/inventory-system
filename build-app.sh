@@ -1,16 +1,14 @@
 #!/bin/bash
-# Make sure this file has executable permissions, run `chmod +x build-app.sh`
 
-# Exit the script if any command fails
 set -e
 
-# Build assets using NPM
-npm run build
-
-# Clear cache
+# clear config/view cache BEFORE vite build
 php artisan optimize:clear
 
-# Cache the various components of the Laravel application
+# then run vite build
+npm run build
+
+# then cache again
 php artisan config:cache
 php artisan event:cache
 php artisan route:cache
