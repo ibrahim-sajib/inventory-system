@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+    base: command === 'build' ? '/build/' : undefined,   // dynamic
     plugins: [
         laravel({
             input: 'resources/js/app.js',
@@ -17,4 +18,4 @@ export default defineConfig({
             },
         }),
     ],
-});
+}));
