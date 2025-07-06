@@ -1,17 +1,27 @@
+# --- STAGE 1: Build Node assets ---
+FROM node:18 as node-builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# --- STAGE 2: PHP with Apache ---
 FROM php:8.2-apache
 
-# copy project code
-COPY . /var/www/html
-
+# Install system dependencies & PHP extensions
 ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
-
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync
 
-RUN apt-get update && apt-get install -y  \
+RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg-dev \
     libpng-dev \
     libwebp-dev \
+    curl \
+    git \
+    zip unzip \
     --no-install-recommends \
     && docker-php-ext-enable opcache \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -19,45 +29,15 @@ RUN apt-get update && apt-get install -y  \
     && apt-get autoclean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -q \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y \
-      curl \
-      git \
-      zip unzip \
-    && install-php-extensions \
-      bcmath \
-      bz2 \
-      calendar \
-      exif \
-      gd \
-      intl \
-      ldap \
-      mcrypt \
-      memcached \
-      mysqli \
-      opcache \
-      pdo_mysql \
-      pdo_pgsql \
-      pgsql \
-      redis \
-      soap \
-      xsl \
-      zip \
-      sockets \
-      iconv \
-      mbstring \
-      && a2enmod rewrite
+RUN install-php-extensions \
+    bcmath bz2 calendar exif gd intl ldap mcrypt memcached \
+    mysqli opcache pdo_mysql pdo_pgsql pgsql redis soap xsl zip sockets iconv mbstring
 
-# Update apache conf to point to application public directory
+# Apache config
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-# Enable headers module
 RUN a2enmod rewrite headers
-
-# Install Node.js & npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -65,31 +45,24 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy only package.json and package-lock.json first
-COPY package*.json ./
-
-# Install npm dependencies (including devDependencies for build)
-# RUN npm install npm@10.8.2 
-ENV NODE_ENV=development
-RUN npm install
-
-# Copy composer files and install PHP dependencies
-COPY composer.json composer.lock ./
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
-# Copy the rest of the application code
+# Copy PHP/Laravel source (except node_modules, vendor, public, resources, routes)
 COPY . .
 
-# Build frontend assets
-RUN npm run build
-ENV NODE_ENV=production
+# Copy built assets and vendor from node-builder
+COPY --from=node-builder /app/public /var/www/html/public
+COPY --from=node-builder /app/resources /var/www/html/resources
+COPY --from=node-builder /app/routes /var/www/html/routes
+
+# If you want to copy vendor from node-builder, make sure you run composer install in node-builder stage
+# Otherwise, run composer install here:
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Permission fix for storage + cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-
-# Update uploads config
+# PHP uploads config
 RUN echo "file_uploads = On\n" \
          "memory_limit = 1024M\n" \
          "upload_max_filesize = 512M\n" \
