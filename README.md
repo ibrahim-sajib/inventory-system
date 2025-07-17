@@ -17,7 +17,7 @@ npm install
 #generate app key
 php artisan key:generate
 
-#run the command backend
+#run the command
 ./vendor/bin/sail up -d
 
 #migrate and seed the data
