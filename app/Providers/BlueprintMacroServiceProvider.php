@@ -10,7 +10,7 @@ class BlueprintMacroServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Add columns
-        Blueprint::macro('activities_by', function (?bool $foreignKeys = false) {
+        Blueprint::macro('activitiesBy', function (?bool $foreignKeys = false) {
             /** @var \Illuminate\Database\Schema\Blueprint $this */
             $this->unsignedBigInteger('created_by')->nullable()->index();
             $this->unsignedBigInteger('updated_by')->nullable()->index();

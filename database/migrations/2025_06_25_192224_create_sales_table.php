@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
             $table->decimal('paid', 10, 2);
             $table->decimal('due', 10, 2);
+            $table->activitiesBy();
             $table->timestamps();
         });
     }

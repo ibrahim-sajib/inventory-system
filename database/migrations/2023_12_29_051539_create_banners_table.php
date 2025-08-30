@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('photo');
             $table->enum('status', ['active', 'inactive'])->default(BannerStatus::INACTIVE);
             $table->enum('type', ['banner', 'promo'])->default(BannerType::BANNER);
-            $table->activities_by();
+            $table->activitiesBy();
             $table->timestamps();
         });
     }

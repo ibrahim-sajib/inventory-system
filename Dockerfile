@@ -61,3 +61,10 @@ RUN echo "file_uploads = On\n" \
 
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 /var/www/html

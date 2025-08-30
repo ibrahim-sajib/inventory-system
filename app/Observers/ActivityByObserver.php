@@ -17,7 +17,6 @@ class ActivityByObserver
             if (empty($model->created_by)) {
                 $model->created_by = $id;
             }
-            $model->updated_by = $id;
         }
     }
 

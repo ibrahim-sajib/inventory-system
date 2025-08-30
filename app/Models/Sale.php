@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\TracksActivityBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Sale extends Model
 {
-    use HasFactory;
+    use HasFactory, TracksActivityBy;
 
     protected $fillable = [
         'customer_name',

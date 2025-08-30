@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('purchase_price', 10, 2);
             $table->decimal('sell_price', 10, 2);
             $table->integer('stock')->default(0);
+            $table->activitiesBy();
             $table->timestamps();
         });
     }
