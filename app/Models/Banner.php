@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Enums\BannerStatus;
 use App\Enums\BannerType;
 use App\Traits\Sluggable;
+use App\Traits\TracksActivityBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Banner extends Model
 {
-    use HasFactory, Sluggable;
+    use HasFactory, Sluggable, TracksActivityBy;
 
     protected $fillable = [
         'title',
